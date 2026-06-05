@@ -3,12 +3,11 @@
 .env.*
 !.env.example
 
-# Subprojects (separate repos)
-keyring/
-unlove/
-2604-carering/
-2604-genre-classification/
-docs/
+# Subprojects (separate repos — each has its own .git)
+/keyring/
+/unlove/
+/2604-carering/
+/2604-genre-classification/
 
 # Python
 __pycache__/
