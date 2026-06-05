@@ -13,40 +13,6 @@ function safeNextPath(fallback) {
 
 /* ───────── service registry ───────── */
 const SERVICES = {
-  otp: {
-    name: 'Keyring',
-    kind: '2FA · OTP vault',
-    glyph: 'OTP',
-    tone: '#7dd3fc',
-    headline: <>Unlock your <span className="accent">vault</span>.</>,
-    sub: <>access your<span className="ser"> one-time codes</span>.</>,
-    lede: <>Your OTP vault stays local. Enter your <b>keyring credentials</b> to unlock your saved codes on this device.</>,
-    guestLabel: 'EXPLORE DEMO VAULT',
-    guestHint: 'Guest mode loads sample accounts. No real codes are shown.',
-    onAuth: () => {},
-    onGuest: () => {
-      try { localStorage.removeItem('kr_user'); } catch (e) {}
-    },
-    redirect: async (auth, qs, id, pw) => {
-      if (auth) {
-        let res;
-        try {
-          res = await fetch('/keyring/api/auth', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, password: pw }),
-          });
-        } catch (e) {
-          return 'Could not reach auth server. Try again.';
-        }
-        if (!res.ok) return 'Incorrect username or password.';
-        try { sessionStorage.setItem('kr_pending_auth', JSON.stringify({ email: id, pw })); } catch (e) {}
-        location.href = '/keyring';
-      } else {
-        location.href = '/keyring?demo=1';
-      }
-    },
-  },
   notes: {
     name: 'Notes',
     kind: 'Scratchpad',
