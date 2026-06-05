@@ -6,6 +6,14 @@ A local-first markdown scratchpad. Notes live in your browser's `localStorage` â
 
 ---
 
+## Screenshots
+
+| Auth gate | Notes app |
+|-----------|-----------|
+| ![Credential gate](docs/screenshots/credential.png) | ![Notes app](docs/screenshots/notes.png) |
+
+---
+
 ## Features
 
 - Create, edit, delete, and pin notes
