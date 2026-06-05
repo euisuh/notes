@@ -1,0 +1,21 @@
+services:
+  personal-tools:
+    build: .
+    image: personal-tools:latest
+    container_name: personal-tools
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8088:80"
+    depends_on:
+      - keyring-backend
+
+  keyring-backend:
+    build: ./backend
+    image: personal-tools-auth:latest
+    container_name: keyring-backend
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      KEYRING_CREDENTIAL: ${KEYRING_CREDENTIAL:-you@email.com:changeme}
