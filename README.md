@@ -137,13 +137,22 @@ docker-compose.yml
 
 ## Security notes
 
-- Notes are stored unencrypted in `localStorage`. Access is gated by the credential check; note content never leaves the browser.
-- The Flask auth service reads credentials from an environment variable only — no disk, no database.
+- Notes are stored unencrypted in `localStorage`. The credential check is a client-side gate (a `sessionStorage` flag set after `POST /keyring/api/auth` succeeds), so it hides the UI but does not protect data already in the browser's `localStorage`. Note content never leaves the browser.
+- The Flask auth service reads credentials from an environment variable only — no disk, no database. It compares in constant time and rejects the `you@email.com:changeme` placeholder with a 500. There is no rate limiting; add it at the reverse proxy if exposed.
 - nginx sends `X-Frame-Options`, `X-Content-Type-Options`, and `Referrer-Policy` headers on all responses.
 - The credential gate is marked `noindex, nofollow`. `robots.txt` disallows all crawlers.
 
 ---
 
+### Tests
+
+```bash
+pip install -r backend/requirements.txt
+python -m unittest discover -s backend/tests -v
+```
+
+---
+
 ## License
 
-MIT
+MIT, see [LICENSE](LICENSE).
