@@ -1,7 +1,16 @@
+import hmac
 import os
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
+
+# Value shipped in .env.example / docker-compose.yml; must never authenticate.
+PLACEHOLDER = 'you@email.com:changeme'
+
+
+def _same(supplied, stored):
+    return isinstance(supplied, str) and hmac.compare_digest(
+        supplied.encode(), stored.encode())
 
 
 @app.route('/keyring/api/auth', methods=['POST'])
@@ -12,8 +21,16 @@ def auth():
         return jsonify({'error': 'Server misconfigured'}), 500
 
     stored_id, stored_pw = parts
-    data = request.get_json(silent=True) or {}
-    if data.get('id') == stored_id and data.get('password') == stored_pw:
+    if credential == PLACEHOLDER:
+        return jsonify({'error': 'Server misconfigured'}), 500
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        data = {}
+    # compare_digest: constant-time; encode so non-ASCII input can't raise TypeError.
+    id_ok = _same(data.get('id'), stored_id)
+    pw_ok = _same(data.get('password'), stored_pw)
+    if id_ok and pw_ok:
         return jsonify({'ok': True}), 200
     return jsonify({'error': 'Invalid credentials'}), 401
 
